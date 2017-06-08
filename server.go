@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 // Server holds the routes available for extending the
@@ -20,7 +21,9 @@ func NewServer(routes ...RouteConfig) (s *Server) {
 	s = &Server{}
 
 	router := echo.New()
-	router.GET("/config", s.GetRoute)
+	router.Use(middleware.Recover())
+
+	router.OPTIONS("/config", s.GetRoute)
 	router.POST("/config", s.AddRoute)
 	s.router = router
 

@@ -1,6 +1,8 @@
 package dynapi
 
-import "text/template"
+import (
+	"text/template"
+)
 
 // RouteConfig holds the information about a dynamic API route.
 type RouteConfig struct {
@@ -18,7 +20,7 @@ type RouteConfigs []RouteConfig
 
 // Merge adds unique RouteConfig structs into the slice of
 // RouteConfigs, ensuring there are no route collisions.
-func (r RouteConfigs) Merge(others ...RouteConfig) {
+func (r *RouteConfigs) Merge(others ...RouteConfig) {
 	for _, other := range others {
 		r.MergeRoute(other)
 	}
@@ -26,14 +28,14 @@ func (r RouteConfigs) Merge(others ...RouteConfig) {
 
 // MergeRoute adds single unique RouteConfig struct to the
 // slice of RouteConfigs, ensuring there are no route collisions.
-func (r RouteConfigs) MergeRoute(other RouteConfig) {
-	for _, existing := range r {
+func (r *RouteConfigs) MergeRoute(other RouteConfig) {
+	for _, existing := range *r {
 		if other == existing {
 			return
 		}
 	}
 
-	r = append(r, other)
+	*r = append(*r, other)
 }
 
 // Equals performs a field-by-field comparison of two
