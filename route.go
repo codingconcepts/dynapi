@@ -30,7 +30,7 @@ func (r *RouteConfigs) Merge(others ...RouteConfig) {
 // slice of RouteConfigs, ensuring there are no route collisions.
 func (r *RouteConfigs) MergeRoute(other RouteConfig) {
 	for _, existing := range *r {
-		if other == existing {
+		if other.Equals(existing) {
 			return
 		}
 	}
