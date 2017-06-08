@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/codingconcepts/dynapi"
 )
@@ -14,17 +13,17 @@ func main() {
 
 var configuration = dynapi.RouteConfigs{
 	dynapi.RouteConfig{
-		Method:       http.MethodGet,
-		URI:          "/person/:name/:age",
-		Example:      "/person/Rob/30",
-		StatusCode:   http.StatusOK,
-		BodyTemplate: "Name: {{.name}} Age: {{.age}}",
+		Method:     http.MethodGet,
+		URI:        "/person/:name/:age",
+		Example:    "/person/Rob/30",
+		StatusCode: http.StatusOK,
+		Body:       "Name: {{.name}} Age: {{.age}}",
 	},
 	dynapi.RouteConfig{
-		Method:     http.MethodGet,
-		URI:        "/timeout",
-		Example:    "/timeout",
-		StatusCode: http.StatusTeapot,
-		Duration:   time.Second * 10,
+		Method:      http.MethodGet,
+		URI:         "/timeout/:duration",
+		Example:     "/timeout/1s",
+		StatusCode:  http.StatusTeapot,
+		DurationArg: "duration",
 	},
 }

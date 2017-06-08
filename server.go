@@ -53,6 +53,12 @@ func (s *Server) GetRoute(c echo.Context) (err error) {
 }
 
 func (s *Server) add(route RouteConfig) {
+	// if a body template has been provided, parse it up-front
+	// to make calls to the dynamic endpoint quicker.
+	if route.Body != "" {
+		route.BodyTemplate = template.Must(template.New(route.Body).Parse(route.Body))
+	}
+
 	handler := routeHandler(route)
 	handlerOptions := routeHandlerOptions(route)
 
@@ -71,16 +77,17 @@ func (s *Server) add(route RouteConfig) {
 
 func routeHandler(r RouteConfig) func(echo.Context) error {
 	return func(c echo.Context) (err error) {
-		time.Sleep(r.Duration)
+		body := ParseArgs(c)
 
-		if r.BodyTemplate == "" {
+		sleep(body, r, c)
+
+		// if a body hasn't be configured, don't bother continuing
+		if r.Body == "" {
 			return c.String(r.StatusCode, "")
 		}
 
-		body := ParseArgs(c)
-
-		t := template.Must(template.New(r.URI).Parse(r.BodyTemplate))
-		if err = t.Execute(c.Response().Writer, body); err != nil {
+		template, err := r.BodyTemplate.Parse(r.Body)
+		if err = template.Execute(c.Response().Writer, body); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, err)
 		}
 
@@ -91,5 +98,19 @@ func routeHandler(r RouteConfig) func(echo.Context) error {
 func routeHandlerOptions(r RouteConfig) func(echo.Context) error {
 	return func(c echo.Context) (err error) {
 		return c.JSON(http.StatusOK, r)
+	}
+}
+
+func sleep(args map[string]interface{}, r RouteConfig, c echo.Context) {
+	if r.DurationArg == "" {
+		return
+	}
+
+	if rawDuration := args[r.DurationArg]; rawDuration != "" {
+		if duration, err := time.ParseDuration(rawDuration.(string)); err != nil {
+
+		} else {
+			time.Sleep(duration)
+		}
 	}
 }

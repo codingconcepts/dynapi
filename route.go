@@ -1,15 +1,16 @@
 package dynapi
 
-import "time"
+import "text/template"
 
 // RouteConfig holds the information about a dynamic API route.
 type RouteConfig struct {
-	Method       string        `json:"method"`
-	URI          string        `json:"uri"`
-	Example      string        `json:"example"`
-	BodyTemplate string        `json:"bodyTemplate"`
-	StatusCode   int           `json:"statusCode"`
-	Duration     time.Duration `json:"duration"`
+	Method       string             `json:"method"`
+	URI          string             `json:"uri"`
+	Example      string             `json:"example"`
+	StatusCode   int                `json:"statusCode"`
+	DurationArg  string             `json:"durationArg,omitempty"`
+	Body         string             `json:"body,omitempty"`
+	BodyTemplate *template.Template `json:"-"`
 }
 
 // RouteConfigs is a slice of RouteConfig structs.
@@ -33,4 +34,31 @@ func (r RouteConfigs) MergeRoute(other RouteConfig) {
 	}
 
 	r = append(r, other)
+}
+
+// Equals performs a field-by-field comparison of two
+// RouteConfig structs.  Required due to the template
+// that's parsed and stored for the RouteConfig which
+// is not comparable.
+func (r RouteConfig) Equals(other RouteConfig) bool {
+	if r.DurationArg != other.DurationArg {
+		return false
+	}
+	if r.Example != other.Example {
+		return false
+	}
+	if r.Method != other.Method {
+		return false
+	}
+	if r.StatusCode != other.StatusCode {
+		return false
+	}
+	if r.URI != other.URI {
+		return false
+	}
+	if r.Body != other.Body {
+		return false
+	}
+
+	return true
 }
