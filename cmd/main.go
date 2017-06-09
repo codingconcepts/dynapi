@@ -6,8 +6,13 @@ import (
 	"github.com/codingconcepts/dynapi"
 )
 
+var (
+	buildVersion   string
+	buildTimestamp string
+)
+
 func main() {
-	server := dynapi.NewServer(configuration...)
+	server := dynapi.NewServer(buildVersion, buildTimestamp, configuration...)
 	server.Start(":1234")
 }
 
