@@ -1,6 +1,8 @@
 require 'rake'
 require 'semver'
 
+output = 'dynapi.exe'
+
 task :build do
     buildVersion = SemVer.find.to_s
     buildTimestamp = DateTime.now().strftime("%F %T")
@@ -9,7 +11,15 @@ task :build do
     ldBuildTimestamp = "-X \"main.buildTimestamp=#{buildTimestamp}\""
 
     Dir.chdir('cmd') do
-        sh('go', 'build', '-ldflags', "#{ldBuildVersion} #{ldBuildTimestamp}", '-o', 'dynapi.exe')
+        sh('go', 'build', '-ldflags', "#{ldBuildVersion} #{ldBuildTimestamp}", '-o', output)
+    end
+end
+
+task :run do
+    Rake::Task["build"].execute
+
+    Dir.chdir('cmd') do
+        sh(output)
     end
 end
 

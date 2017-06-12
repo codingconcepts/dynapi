@@ -24,8 +24,8 @@ func TestParseArgs(t *testing.T) {
 			paramValues: []string{"1", "2"},
 			expected: map[string]interface{}{
 				"a": "1",
-				"b": []string{"3"},
-				"d": []string{"4", "5"},
+				"b": "3",
+				"d": "4, 5",
 			},
 		},
 		{
@@ -35,14 +35,14 @@ func TestParseArgs(t *testing.T) {
 			expected: map[string]interface{}{
 				"a": "1",
 				"b": "2",
-				"c": []string{"3"},
-				"d": []string{"4", "5"},
+				"c": "3",
+				"d": "4, 5",
 			},
 		},
 		{
 			query: url.Values{"a": []string{"1"}},
 			expected: map[string]interface{}{
-				"a": []string{"1"},
+				"a": "1",
 			},
 		},
 		{
@@ -75,23 +75,3 @@ func TestParseArgs(t *testing.T) {
 		})
 	}
 }
-
-// func TestParseArgs(t *testing.T) {
-// 	query := url.Values{
-// 		"b": []string{"3"},
-// 		"d": []string{"4", "5"},
-// 	}
-
-// 	req := httptest.NewRequest(http.MethodGet, "/anything?"+query.Encode(), nil)
-// 	resp := httptest.NewRecorder()
-
-// 	router := echo.New()
-// 	context := router.NewContext(req, resp)
-// 	context.SetParamNames("a", "b")
-// 	context.SetParamValues("1", "2")
-
-// 	args := ParseArgs(context)
-// 	test.Equals(t, "1", args["a"])
-// 	test.Equals(t, []string{"3"}, args["b"])
-// 	test.Equals(t, []string{"4", "5"}, args["d"])
-// }

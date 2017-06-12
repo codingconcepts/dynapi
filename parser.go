@@ -1,6 +1,10 @@
 package dynapi
 
-import "github.com/labstack/echo"
+import (
+	"strings"
+
+	"github.com/labstack/echo"
+)
 
 // ParseArgs extracts arguments from the URL and the query string
 // and ensures that any query string parameters provided overwrite
@@ -44,7 +48,7 @@ func parseQueryStringArgs(c echo.Context) (items map[string]interface{}) {
 
 	items = make(map[string]interface{}, len(c.QueryParams()))
 	for name, value := range c.QueryParams() {
-		items[name] = value
+		items[name] = strings.Join(value, ", ")
 	}
 
 	return

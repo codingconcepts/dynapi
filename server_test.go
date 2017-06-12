@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/codingconcepts/dynapi/test"
-	"github.com/facebookgo/clock"
 )
 
 const (
@@ -19,8 +19,7 @@ const (
 )
 
 var (
-	server    *Server
-	clockMock = clock.NewMock()
+	server *Server
 
 	bodyGETRouteExample = RouteConfig{
 		Method:     http.MethodGet,
@@ -54,7 +53,6 @@ var (
 
 func TestMain(t *testing.M) {
 	server = NewServer(testBuildVersion, testBuildTimestamp, routeConfig...)
-	server.Clock = clockMock
 
 	os.Exit(t.Run())
 }
@@ -149,14 +147,16 @@ func TestRouteHandlerOptions(t *testing.T) {
 }
 
 func TestDuration(t *testing.T) {
-	t.SkipNow()
-
-	req, _ := http.NewRequest(http.MethodGet, "/wait/3h2m1s", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/wait/1ms", nil)
 	resp := httptest.NewRecorder()
+
+	start := time.Now()
 
 	server.ServeHTTP(resp, req)
 
-	test.Equals(t, http.StatusTeapot, resp.Result().StatusCode)
+	stop := time.Now()
+	duration := stop.Sub(start)
 
-	//test.Assert(t, time.Since(now) >= time.Millisecond*5, "endpoint did not sleep long enough")
+	test.Equals(t, http.StatusTeapot, resp.Result().StatusCode)
+	test.Assert(t, duration >= time.Millisecond)
 }

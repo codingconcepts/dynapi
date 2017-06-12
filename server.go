@@ -6,7 +6,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/facebookgo/clock"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -18,8 +17,6 @@ type Server struct {
 	routes         RouteConfigs
 	buildVersion   string
 	buildTimestamp string
-
-	Clock clock.Clock
 }
 
 // NewServer returns a pointer to a new instance of Server.
@@ -27,7 +24,6 @@ func NewServer(buildVersion, buildTimestamp string, routes ...RouteConfig) (s *S
 	s = &Server{
 		buildVersion:   buildVersion,
 		buildTimestamp: buildTimestamp,
-		Clock:          clock.New(),
 	}
 
 	router := echo.New()
@@ -118,6 +114,7 @@ func (s *Server) routeHandler(r RouteConfig) func(echo.Context) error {
 			return c.String(r.StatusCode, "")
 		}
 
+		c.Response().WriteHeader(r.StatusCode)
 		template, err := r.BodyTemplate.Parse(r.Body)
 		if err = template.Execute(c.Response().Writer, body); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -143,7 +140,8 @@ func (s *Server) sleep(args map[string]interface{}, r RouteConfig, c echo.Contex
 		if duration, err = time.ParseDuration(rawDuration.(string)); err != nil {
 			return
 		}
-		s.Clock.Sleep(duration)
+
+		time.Sleep(duration)
 	}
 
 	return
