@@ -52,7 +52,7 @@ var (
 )
 
 func TestMain(t *testing.M) {
-	server = NewServer(testBuildVersion, testBuildTimestamp, routeConfig...)
+	server = NewServer(BuildInfo(testBuildVersion, testBuildTimestamp), Routes(routeConfig...))
 
 	os.Exit(t.Run())
 }

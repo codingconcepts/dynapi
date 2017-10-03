@@ -2,6 +2,7 @@ package dynapi
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"text/template"
 	"time"
@@ -14,17 +15,16 @@ import (
 // API surface.
 type Server struct {
 	router         *echo.Echo
+	certsDir       string
+	port           int
 	routes         RouteConfigs
 	buildVersion   string
 	buildTimestamp string
 }
 
 // NewServer returns a pointer to a new instance of Server.
-func NewServer(buildVersion, buildTimestamp string, routes ...RouteConfig) (s *Server) {
-	s = &Server{
-		buildVersion:   buildVersion,
-		buildTimestamp: buildTimestamp,
-	}
+func NewServer(options ...Option) (s *Server) {
+	s = &Server{}
 
 	router := echo.New()
 	router.Use(middleware.Recover())
@@ -34,8 +34,10 @@ func NewServer(buildVersion, buildTimestamp string, routes ...RouteConfig) (s *S
 	router.POST("/config", s.AddRoute)
 	s.router = router
 
-	for _, route := range routes {
-		s.add(route)
+	for _, option := range options {
+		if err := option(s); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	return
@@ -47,8 +49,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // Start start the server's router.
-func (s *Server) Start(addr string) (err error) {
-	return s.router.Start(addr)
+func (s *Server) Start() (err error) {
+	return s.router.Start(fmt.Sprintf(":%d", s.port))
 }
 
 // Stop stops the server's router.
