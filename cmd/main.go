@@ -1,9 +1,11 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/codingconcepts/dynapi"
+	"github.com/codingconcepts/env"
 )
 
 var (
@@ -12,8 +14,21 @@ var (
 )
 
 func main() {
-	server := dynapi.NewServer(buildVersion, buildTimestamp, configuration...)
-	server.Start(":1234")
+	config := struct {
+		Port     int    `env:"PORT" required:"true"`
+		CertsDir string `env:"CERTS" required:"true" default:"certs"`
+	}{}
+	if err := env.Set(&config); err != nil {
+		log.Fatal(err)
+	}
+
+	server := dynapi.NewServer(
+		dynapi.Port(config.Port),
+		dynapi.CertsDir(config.CertsDir),
+		dynapi.Routes(configuration...),
+		dynapi.BuildInfo(buildVersion, buildTimestamp))
+
+	server.Start()
 }
 
 var configuration = dynapi.RouteConfigs{
