@@ -6,13 +6,14 @@ import (
 
 // RouteConfig holds the information about a dynamic API route.
 type RouteConfig struct {
-	Method       string             `json:"method"`
-	URI          string             `json:"uri"`
-	Example      string             `json:"example"`
-	StatusCode   int                `json:"statusCode"`
-	DurationArg  string             `json:"durationArg,omitempty"`
-	Body         string             `json:"body,omitempty"`
-	BodyTemplate *template.Template `json:"-"`
+	Method          string             `json:"method"`
+	URI             string             `json:"uri"`
+	Example         string             `json:"example"`
+	StatusCode      int                `json:"statusCode"`
+	DurationArg     string             `json:"durationArg,omitempty"`
+	Body            string             `json:"body,omitempty"`
+	BodyTemplate    *template.Template `json:"-"`
+	BodyContentType string             `json:"contentType"`
 }
 
 // RouteConfigs is a slice of RouteConfig structs.

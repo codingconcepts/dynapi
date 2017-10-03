@@ -2,8 +2,11 @@ package middleware
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -53,6 +56,9 @@ func Static(root string) echo.MiddlewareFunc {
 // See `Static()`.
 func StaticWithConfig(config StaticConfig) echo.MiddlewareFunc {
 	// Defaults
+	if config.Root == "" {
+		config.Root = "." // For security we want to restrict to CWD.
+	}
 	if config.Skipper == nil {
 		config.Skipper = DefaultStaticConfig.Skipper
 	}
@@ -61,46 +67,72 @@ func StaticWithConfig(config StaticConfig) echo.MiddlewareFunc {
 	}
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			p := c.Param("*")
-			name := filepath.Join(config.Root, p)
-			fi, err := os.Stat(name)
+		return func(c echo.Context) (err error) {
+			if config.Skipper(c) {
+				return next(c)
+			}
 
+			p := c.Request().URL.Path
+			if strings.HasSuffix(c.Path(), "*") { // When serving from a group, e.g. `/static*`.
+				p = c.Param("*")
+			}
+			p, err = echo.PathUnescape(p)
+			if err != nil {
+				return
+			}
+			name := filepath.Join(config.Root, path.Clean("/"+p)) // "/"+ for security
+
+			fi, err := os.Stat(name)
 			if err != nil {
 				if os.IsNotExist(err) {
-					if config.HTML5 {
-						return c.File(filepath.Join(config.Root, config.Index))
+					if err = next(c); err != nil {
+						if he, ok := err.(*echo.HTTPError); ok {
+							if config.HTML5 && he.Code == http.StatusNotFound {
+								return c.File(filepath.Join(config.Root, config.Index))
+							}
+						}
+						return
 					}
-					return echo.ErrNotFound
 				}
-				return err
+				return
 			}
 
 			if fi.IsDir() {
-				if config.Browse {
-					return listDir(name, c.Response())
+				index := filepath.Join(name, config.Index)
+				fi, err = os.Stat(index)
+
+				if err != nil {
+					if config.Browse {
+						return listDir(name, c.Response())
+					}
+					if os.IsNotExist(err) {
+						return next(c)
+					}
+					return
 				}
-				return c.File(filepath.Join(name, config.Index))
+
+				return c.File(index)
 			}
+
 			return c.File(name)
 		}
 	}
 }
 
-func listDir(name string, res *echo.Response) error {
+func listDir(name string, res *echo.Response) (err error) {
 	dir, err := os.Open(name)
 	if err != nil {
-		return err
+		return
 	}
 	dirs, err := dir.Readdir(-1)
 	if err != nil {
-		return err
+		return
 	}
 
 	// Create a directory index
 	res.Header().Set(echo.HeaderContentType, echo.MIMETextHTMLCharsetUTF8)
 	if _, err = fmt.Fprintf(res, "<pre>\n"); err != nil {
-		return err
+		return
 	}
 	for _, d := range dirs {
 		name := d.Name()
@@ -110,9 +142,9 @@ func listDir(name string, res *echo.Response) error {
 			name += "/"
 		}
 		if _, err = fmt.Fprintf(res, "<a href=\"%s\" style=\"color: %s;\">%s</a>\n", name, color, name); err != nil {
-			return err
+			return
 		}
 	}
 	_, err = fmt.Fprintf(res, "</pre>\n")
-	return err
+	return
 }

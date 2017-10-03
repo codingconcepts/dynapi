@@ -114,6 +114,10 @@ func (s *Server) routeHandler(r RouteConfig) func(echo.Context) error {
 			return c.String(r.StatusCode, "")
 		}
 
+		if r.BodyContentType != "" {
+			c.Response().Header().Set("Content-Type", r.BodyContentType)
+		}
+
 		c.Response().WriteHeader(r.StatusCode)
 		template, err := r.BodyTemplate.Parse(r.Body)
 		if err = template.Execute(c.Response().Writer, body); err != nil {
