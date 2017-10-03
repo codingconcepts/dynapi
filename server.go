@@ -1,11 +1,14 @@
 package dynapi
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
 	"text/template"
 	"time"
+
+	"golang.org/x/crypto/acme/autocert"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -16,6 +19,7 @@ import (
 type Server struct {
 	router         *echo.Echo
 	certsDir       string
+	host           string
 	port           int
 	routes         RouteConfigs
 	buildVersion   string
@@ -23,16 +27,19 @@ type Server struct {
 }
 
 // NewServer returns a pointer to a new instance of Server.
-func NewServer(options ...Option) (s *Server) {
-	s = &Server{}
+func NewServer(host string, port int, options ...Option) (s *Server) {
+	s = &Server{
+		host: host,
+		port: port,
+	}
 
 	router := echo.New()
-	router.Use(middleware.Recover())
-
-	router.GET("/version", s.GetVersion)
-	router.OPTIONS("/config", s.GetConfig)
-	router.POST("/config", s.AddRoute)
 	s.router = router
+	s.router.Use(middleware.Recover())
+
+	s.router.GET("/version", s.GetVersion)
+	s.router.OPTIONS("/config", s.GetConfig)
+	s.router.POST("/config", s.AddRoute)
 
 	for _, option := range options {
 		if err := option(s); err != nil {
@@ -50,7 +57,33 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Start start the server's router.
 func (s *Server) Start() (err error) {
-	return s.router.Start(fmt.Sprintf(":%d", s.port))
+	s.router.Server.ReadTimeout = 5 * time.Second
+	s.router.Server.WriteTimeout = 5 * time.Second
+	s.router.Server.IdleTimeout = 10 * time.Second
+
+	s.router.AutoTLSManager.HostPolicy = autocert.HostWhitelist(s.host)
+	s.router.AutoTLSManager.Cache = autocert.DirCache(s.certsDir)
+	s.router.AutoTLSManager.Prompt = autocert.AcceptTOS
+
+	s.router.Server.TLSConfig = &tls.Config{
+		GetCertificate:           s.router.AutoTLSManager.GetCertificate,
+		PreferServerCipherSuites: true,
+		CurvePreferences: []tls.CurveID{
+			tls.CurveP256,
+			tls.X25519,
+		},
+		MinVersion: tls.VersionTLS12,
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+		},
+	}
+
+	return s.router.StartAutoTLS(fmt.Sprintf(":%d", s.port))
 }
 
 // Stop stops the server's router.

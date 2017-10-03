@@ -16,4 +16,4 @@ VOLUME ["/certs"]
 
 ### Run ###
 # docker pull codingconcepts/dynapi
-# docker run -d -p 443:443 -e HOST=test.robreid.io -e CERT=/certs -e PORT=443 -v /certs:/certs codingconcepts/sandbox:hello
+# docker run -d -p 443:443 -e HOST=api.robreid.io -e CERTS=/certs -e PORT=443 -v /certs:/certs codingconcepts/dynapi

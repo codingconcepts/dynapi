@@ -15,6 +15,7 @@ var (
 
 func main() {
 	config := struct {
+		Host     string `env:"HOST" required:"true"`
 		Port     int    `env:"PORT" required:"true"`
 		CertsDir string `env:"CERTS" required:"true" default:"certs"`
 	}{}
@@ -23,7 +24,8 @@ func main() {
 	}
 
 	server := dynapi.NewServer(
-		dynapi.Port(config.Port),
+		config.Host,
+		config.Port,
 		dynapi.CertsDir(config.CertsDir),
 		dynapi.Routes(configuration...),
 		dynapi.BuildInfo(buildVersion, buildTimestamp))

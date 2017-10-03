@@ -5,6 +5,14 @@ import "fmt"
 // Option allows for server configuration to creation time.
 type Option func(s *Server) error
 
+// Host allows for the configuration of the TLS host name.
+func Host(value string) Option {
+	return func(s *Server) error {
+		s.host = value
+		return nil
+	}
+}
+
 // Port allows for the configuration of a port number.
 func Port(value int) Option {
 	return func(s *Server) error {
