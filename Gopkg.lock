@@ -2,10 +2,16 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/codingconcepts/env"
+  packages = ["."]
+  revision = "31f8d99d7765666589f9b44db294011c1d95aed3"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
-  revision = "d2709f9f1f31ebcda9651b03077758c1f3a0018c"
-  version = "v3.0.0"
+  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
+  version = "v3.1.0"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -32,6 +38,12 @@
   version = "v0.0.3"
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/valyala/bytebufferpool"
   packages = ["."]
@@ -47,17 +59,17 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert"]
-  revision = "9419663f5a44be8b34ca85f08abc5fe1be11f8a3"
+  revision = "687d4b818545e443c8ba223cbef20b1721afd4db"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "314a259e304ff91bd6985da2a7149bbf91237993"
+  revision = "d4266bc12aae0b4128952c889b769442fce5d2f1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "91e30354296cd906601e6a0f51bf06f49e5ed641ff83e1650db6b1c8537351d5"
+  inputs-digest = "66fa99497f074393ce424b1e3472af6ce8e38432eb3909d152b8afc71e0207a1"
   solver-name = "gps-cdcl"
   solver-version = 1

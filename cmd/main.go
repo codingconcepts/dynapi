@@ -17,7 +17,8 @@ func main() {
 	config := struct {
 		Host     string `env:"HOST" required:"true"`
 		Port     int    `env:"PORT" required:"true"`
-		CertsDir string `env:"CERTS" required:"true" default:"certs"`
+		SSL      bool   `env:"SSL" default:"true"`
+		CertsDir string `env:"CERTS" default:"certs"`
 	}{}
 	if err := env.Set(&config); err != nil {
 		log.Fatal(err)
@@ -26,6 +27,7 @@ func main() {
 	server := dynapi.NewServer(
 		config.Host,
 		config.Port,
+		dynapi.SSL(config.SSL),
 		dynapi.CertsDir(config.CertsDir),
 		dynapi.Routes(configuration...),
 		dynapi.BuildInfo(buildVersion, buildTimestamp))

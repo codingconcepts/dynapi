@@ -18,6 +18,7 @@ import (
 // API surface.
 type Server struct {
 	router         *echo.Echo
+	ssl            bool
 	certsDir       string
 	host           string
 	port           int
@@ -38,8 +39,8 @@ func NewServer(host string, port int, options ...Option) (s *Server) {
 	s.router.Use(middleware.Recover())
 
 	s.router.GET("/version", s.GetVersion)
-	s.router.OPTIONS("/config", s.GetConfig)
-	s.router.POST("/config", s.AddRoute)
+	s.router.OPTIONS("/", s.GetConfig)
+	s.router.POST("/", s.AddRoute)
 
 	for _, option := range options {
 		if err := option(s); err != nil {
@@ -60,6 +61,10 @@ func (s *Server) Start() (err error) {
 	s.router.Server.ReadTimeout = 5 * time.Second
 	s.router.Server.WriteTimeout = 5 * time.Second
 	s.router.Server.IdleTimeout = 10 * time.Second
+
+	if !s.ssl {
+		return s.router.Start(fmt.Sprintf(":%d", s.port))
+	}
 
 	s.router.AutoTLSManager.HostPolicy = autocert.HostWhitelist(s.host)
 	s.router.AutoTLSManager.Cache = autocert.DirCache(s.certsDir)

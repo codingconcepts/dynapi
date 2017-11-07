@@ -1,7 +1,7 @@
 # dynapi
-A dynamic API allowing for easy testing
+A dynamic API allowing for easy web client testing
 
-## Todo
+## todo
 
 - [x] Add the parsed template to the route config and perform a manual equals (template not comparable)
 - [x] url.Query parameters should result in "1, 2", not "[1 2]"
