@@ -9,6 +9,7 @@ VOLUME ["/certs"]
 ### Build ###
 # CGO_ENABLED=0 GOOS=linux go build -a -o dynapi .
 # docker build -t dynapi .
+# rm dynapi
 
 ### Deploy ###
 # docker tag dynapi codingconcepts/dynapi
@@ -17,3 +18,4 @@ VOLUME ["/certs"]
 ### Run ###
 # docker pull codingconcepts/dynapi
 # docker run -d -p 443:443 -e HOST=api.robreid.io -e CERTS=/certs -e PORT=443 -v /certs:/certs codingconcepts/dynapi
+# docker run -d -p 1234:1234 -e HOST=api.robreid.io -e SSL=false -e PORT=1234 dynapi

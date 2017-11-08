@@ -7,7 +7,7 @@ import (
 	"github.com/codingconcepts/dynapi/test"
 )
 
-func TestEquals(t *testing.T) {
+func TestAddRoute(t *testing.T) {
 	route := RouteConfig{
 		Body:        "body",
 		DurationArg: "durationArg",
@@ -22,13 +22,61 @@ func TestEquals(t *testing.T) {
 		set            func(RouteConfig) RouteConfig
 		expectedResult bool
 	}{
-		{name: "body", set: func(r RouteConfig) RouteConfig { r.Body = "different"; return r }, expectedResult: false},
-		{name: "durationArg", set: func(r RouteConfig) RouteConfig { r.DurationArg = "different"; return r }, expectedResult: false},
-		{name: "example", set: func(r RouteConfig) RouteConfig { r.Example = "different"; return r }, expectedResult: false},
-		{name: "method", set: func(r RouteConfig) RouteConfig { r.Method = "different"; return r }, expectedResult: false},
-		{name: "statusCode", set: func(r RouteConfig) RouteConfig { r.StatusCode = http.StatusCreated; return r }, expectedResult: false},
-		{name: "uri", set: func(r RouteConfig) RouteConfig { r.URI = "different"; return r }, expectedResult: false},
-		{name: "same", set: func(r RouteConfig) RouteConfig { return r }, expectedResult: true},
+		{
+			name: "body",
+			set: func(r RouteConfig) RouteConfig {
+				r.Body = "different"
+				return r
+			},
+			expectedResult: false,
+		},
+		{
+			name: "durationArg",
+			set: func(r RouteConfig) RouteConfig {
+				r.DurationArg = "different"
+				return r
+			},
+			expectedResult: false,
+		},
+		{
+			name: "example",
+			set: func(r RouteConfig) RouteConfig {
+				r.Example = "different"
+				return r
+			},
+			expectedResult: false,
+		},
+		{
+			name: "method",
+			set: func(r RouteConfig) RouteConfig {
+				r.Method = "different"
+				return r
+			},
+			expectedResult: false,
+		},
+		{
+			name: "statusCode",
+			set: func(r RouteConfig) RouteConfig {
+				r.StatusCode = http.StatusCreated
+				return r
+			},
+			expectedResult: false,
+		},
+		{
+			name: "uri",
+			set: func(r RouteConfig) RouteConfig {
+				r.URI = "different"
+				return r
+			},
+			expectedResult: false,
+		},
+		{
+			name: "same",
+			set: func(r RouteConfig) RouteConfig {
+				return r
+			},
+			expectedResult: true
+		},
 	}
 
 	for _, testCase := range testCases {
