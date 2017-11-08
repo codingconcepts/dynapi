@@ -1,6 +1,10 @@
 package dynapi
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/facebookgo/clock"
+)
 
 // Option allows for server configuration to creation time.
 type Option func(s *Server) error
@@ -18,6 +22,15 @@ func CertsDir(value string) Option {
 func SSL(value bool) Option {
 	return func(s *Server) error {
 		s.ssl = value
+		return nil
+	}
+}
+
+// Clock allows for the configuration of a mock clock
+// for testing durations.
+func Clock(value clock.Clock) Option {
+	return func(s *Server) error {
+		s.clock = value
 		return nil
 	}
 }

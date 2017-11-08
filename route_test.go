@@ -75,7 +75,7 @@ func TestAddRoute(t *testing.T) {
 			set: func(r RouteConfig) RouteConfig {
 				return r
 			},
-			expectedResult: true
+			expectedResult: true,
 		},
 	}
 

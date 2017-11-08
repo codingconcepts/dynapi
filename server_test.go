@@ -67,7 +67,7 @@ func TestVersion(t *testing.T) {
 }
 
 func TestGetConfig(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodOptions, "/config", nil)
+	req, _ := http.NewRequest(http.MethodOptions, "/", nil)
 	resp := httptest.NewRecorder()
 	server.ServeHTTP(resp, req)
 
@@ -93,7 +93,7 @@ func TestAddConfig(t *testing.T) {
 	buf := new(bytes.Buffer)
 	json.NewEncoder(buf).Encode(config)
 
-	req, _ := http.NewRequest(http.MethodPost, "/config", buf)
+	req, _ := http.NewRequest(http.MethodPost, "/", buf)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp := httptest.NewRecorder()
