@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/codingconcepts/dynapi/test"
-	"github.com/facebookgo/clock"
 )
 
 func TestOptionCertsDir(t *testing.T) {
@@ -17,14 +16,6 @@ func TestOptionSSL(t *testing.T) {
 	exp := true
 	s := NewServer("", 0, SSL(exp))
 	test.Equals(t, exp, s.ssl)
-}
-
-func TestOptionClock(t *testing.T) {
-	exp := clock.NewMock()
-	s := NewServer("", 0, Clock(exp))
-
-	_, ok := s.clock.(*clock.Mock)
-	test.Assert(t, ok)
 }
 
 func TestOptionBuildInfo(t *testing.T) {

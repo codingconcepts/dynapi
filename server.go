@@ -10,7 +10,6 @@ import (
 
 	"golang.org/x/crypto/acme/autocert"
 
-	"github.com/facebookgo/clock"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -24,7 +23,6 @@ type Server struct {
 	host           string
 	port           int
 	routes         RouteConfigs
-	clock          clock.Clock
 	buildVersion   string
 	buildTimestamp string
 }
@@ -32,9 +30,8 @@ type Server struct {
 // NewServer returns a pointer to a new instance of Server.
 func NewServer(host string, port int, options ...Option) (s *Server) {
 	s = &Server{
-		host:  host,
-		port:  port,
-		clock: clock.New(),
+		host: host,
+		port: port,
 	}
 
 	router := echo.New()
@@ -182,14 +179,16 @@ func (s *Server) sleep(args map[string]interface{}, r RouteConfig, c echo.Contex
 		return
 	}
 
-	if rawDuration, ok := args[r.DurationArg]; ok {
-		var duration time.Duration
-		if duration, err = time.ParseDuration(rawDuration.(string)); err != nil {
-			return
-		}
-
-		time.Sleep(duration)
+	rawDuration, ok := args[r.DurationArg]
+	if !ok {
+		return
 	}
 
+	duration, err := time.ParseDuration(rawDuration.(string))
+	if err != nil {
+		return
+	}
+
+	time.Sleep(duration)
 	return
 }

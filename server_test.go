@@ -8,7 +8,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/codingconcepts/dynapi/test"
 )
@@ -144,19 +143,4 @@ func TestRouteHandlerOptions(t *testing.T) {
 			test.Equals(t, testCase.expectedBody, resp.Body.String())
 		})
 	}
-}
-
-func TestDuration(t *testing.T) {
-	req, _ := http.NewRequest(http.MethodGet, "/wait/1ms", nil)
-	resp := httptest.NewRecorder()
-
-	start := time.Now()
-
-	server.ServeHTTP(resp, req)
-
-	stop := time.Now()
-	duration := stop.Sub(start)
-
-	test.Equals(t, http.StatusTeapot, resp.Result().StatusCode)
-	test.Assert(t, duration >= time.Millisecond)
 }
