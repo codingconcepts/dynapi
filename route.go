@@ -13,7 +13,7 @@ type RouteConfig struct {
 	DurationArg     string             `json:"durationArg,omitempty" yaml:"durationArg"`
 	Body            string             `json:"body,omitempty" yaml:"body,omitempty"`
 	BodyTemplate    *template.Template `json:"-" yaml:"-"`
-	BodyContentType string             `json:"contentType" yaml:"contentType"`
+	BodyContentType string             `json:"contentType" yaml:"contentType,omitempty"`
 }
 
 // RouteConfigs is a slice of RouteConfig structs.

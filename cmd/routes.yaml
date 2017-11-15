@@ -2,7 +2,6 @@
   uri: /xml
   example: /xml
   statusCode: 200
-  durationArg: ""
   body: |
     <?xml version="1.0" encoding="UTF-8"?>
     <movies>
@@ -14,11 +13,11 @@
       </movie>
     </movies>
   bodyContentType: text/xml
+
 - method: GET
   uri: /jsonNested
   example: /jsonNested
   statusCode: 200
-  durationArg: ""
   body: |
     {
       "movies": [
@@ -30,7 +29,7 @@
           }
         },
         {
-          "name": "Kill Bill II",\n\t\t\t\t\t\t
+          "name": "Kill Bill II",
           "director": {
             "firstName": "Quentin",
             "lastName": "Tarantino"
@@ -39,11 +38,11 @@
       ]
     }
   bodyContentType: application/json
+
 - method: GET
   uri: /jsonArray
   example: /jsonArray
   statusCode: 200
-  durationArg: ""
   body: |
     [
       {
@@ -62,17 +61,20 @@
       }
     ]
   bodyContentType: application/json
+
 - method: GET
   uri: /person/:name/:age
   example: /person/Rob/31
   statusCode: 200
-  durationArg: ""
   body: 'Name: {{.name}} Age: {{.age}}'
-  bodyContentType: ""
+
 - method: GET
   uri: /timeout/:duration
   example: /timeout/1s
   statusCode: 200
   durationArg: duration
-  body: ""
-  bodyContentType: ""
+
+- method: GET
+  uri: /error
+  example: /error
+  statusCode: 500
