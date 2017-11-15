@@ -1,9 +1,5 @@
 package dynoapi
 
-import (
-	"fmt"
-)
-
 // Option allows for server configuration to creation time.
 type Option func(s *Server) error
 
@@ -36,10 +32,8 @@ func BuildInfo(version string, timeStamp string) Option {
 
 // Routes allows for the configuration of route endpoints.
 func Routes(values ...RouteConfig) Option {
-	fmt.Println(values)
 	return func(s *Server) error {
 		for _, value := range values {
-			fmt.Println(value)
 			s.add(value)
 		}
 		return nil
