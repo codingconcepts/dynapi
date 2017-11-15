@@ -1,4 +1,4 @@
-package dynapi
+package dynoapi
 
 import (
 	"crypto/tls"

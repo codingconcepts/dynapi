@@ -1,4 +1,4 @@
-package dynapi
+package dynoapi
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/codingconcepts/dynapi/test"
+	"github.com/codingconcepts/dynoapi/test"
 )
 
 const (

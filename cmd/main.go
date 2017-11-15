@@ -1,10 +1,14 @@
 package main
 
 import (
+	"flag"
+	"io/ioutil"
 	"log"
-	"net/http"
+	"os"
 
-	"github.com/codingconcepts/dynapi"
+	"gopkg.in/yaml.v2"
+
+	"github.com/codingconcepts/dynoapi"
 	"github.com/codingconcepts/env"
 )
 
@@ -14,100 +18,49 @@ var (
 )
 
 func main() {
+	os.Setenv("HOST", "localhost")
+	os.Setenv("PORT", "1234")
+	os.Setenv("SSL", "false")
+
 	config := struct {
 		Host     string `env:"HOST" required:"true"`
 		Port     int    `env:"PORT" required:"true"`
 		SSL      bool   `env:"SSL" default:"true"`
 		CertsDir string `env:"CERTS" default:"certs"`
 	}{}
-	if err := env.Set(&config); err != nil {
-		log.Fatal(err)
+	err := env.Set(&config)
+	if err != nil {
+		log.Fatalf("loading environment configuration: %v", err)
 	}
 
-	server := dynapi.NewServer(
+	routeConfig := flag.String("c", "", "route configuration file")
+	flag.Parse()
+
+	var configuration dynoapi.RouteConfigs
+	if *routeConfig != "" {
+		if configuration, err = loadRouteConfiguration(*routeConfig); err != nil {
+			log.Fatalf("loading route configuration: %v", err)
+		}
+	}
+
+	server := dynoapi.NewServer(
 		config.Host,
 		config.Port,
-		dynapi.SSL(config.SSL),
-		dynapi.CertsDir(config.CertsDir),
-		dynapi.Routes(configuration...),
-		dynapi.BuildInfo(buildVersion, buildTimestamp))
+		dynoapi.SSL(config.SSL),
+		dynoapi.CertsDir(config.CertsDir),
+		dynoapi.Routes(configuration...),
+		dynoapi.BuildInfo(buildVersion, buildTimestamp))
 
 	server.Start()
 }
 
-var configuration = dynapi.RouteConfigs{
-	dynapi.RouteConfig{
-		Method:          http.MethodGet,
-		URI:             "/xml",
-		Example:         "/xml",
-		StatusCode:      http.StatusOK,
-		BodyContentType: "text/xml",
-		Body: `<?xml version="1.0" encoding="UTF-8"?>
-		<movies>
-			<movie name="Shutter Island">
-				<director firstName="Martin" lastName="Scorsese" />
-			</movie>
-			<movie name="Kill Bill II">
-				<director firstName="Quentin" lastName="Tarantino" />
-			</movie>
-		</movies>`,
-	},
-	dynapi.RouteConfig{
-		Method:          http.MethodGet,
-		URI:             "/jsonNested",
-		Example:         "/jsonNested",
-		StatusCode:      http.StatusOK,
-		BodyContentType: "application/json",
-		Body: `{
-				"movies": [
-					{	"name": "Shutter Island",
-						"director": {
-							"firstName": "Martin",
-							"lastName": "Scorsese"
-						}
-					},
-					{	"name": "Kill Bill II",
-						"director": {
-							"firstName": "Quentin",
-							"lastName": "Tarantino"
-						}
-					}
-			]
-		}`,
-	},
-	dynapi.RouteConfig{
-		Method:          http.MethodGet,
-		URI:             "/jsonArray",
-		Example:         "/jsonArray",
-		StatusCode:      http.StatusOK,
-		BodyContentType: "application/json",
-		Body: `[
-			{	"name": "Shutter Island",
-				"director": {
-					"firstName": "Martin",
-					"lastName": "Scorsese"
-				}
-			},
-			{	"name": "Kill Bill II",
-				"director": {
-					"firstName": "Quentin",
-					"lastName": "Tarantino"
-				}
-			}
-		]`,
-	},
-	dynapi.RouteConfig{
-		Method:     http.MethodGet,
-		URI:        "/person/:name/:age",
-		Example:    "/person/Rob/31",
-		StatusCode: http.StatusOK,
-		Body:       "Name: {{.name}} Age: {{.age}}",
-	},
-	dynapi.RouteConfig{
-		Method:      http.MethodGet,
-		URI:         "/timeout/:duration",
-		Example:     "/timeout/1s",
-		StatusCode:  http.StatusOK,
-		DurationArg: "duration",
-	},
+func loadRouteConfiguration(path string) (routes dynoapi.RouteConfigs, err error) {
+	bytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return
+	}
+
+	routes = dynoapi.RouteConfigs{}
+	err = yaml.Unmarshal(bytes, &routes)
+	return
 }

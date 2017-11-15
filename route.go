@@ -1,4 +1,4 @@
-package dynapi
+package dynoapi
 
 import (
 	"text/template"
@@ -6,14 +6,14 @@ import (
 
 // RouteConfig holds the information about a dynamic API route.
 type RouteConfig struct {
-	Method          string             `json:"method"`
-	URI             string             `json:"uri"`
-	Example         string             `json:"example"`
-	StatusCode      int                `json:"statusCode"`
-	DurationArg     string             `json:"durationArg,omitempty"`
-	Body            string             `json:"body,omitempty"`
-	BodyTemplate    *template.Template `json:"-"`
-	BodyContentType string             `json:"contentType"`
+	Method          string             `json:"method" yaml:"method"`
+	URI             string             `json:"uri" yaml:"uri"`
+	Example         string             `json:"example" yaml:"example"`
+	StatusCode      int                `json:"statusCode" yaml:"statusCode"`
+	DurationArg     string             `json:"durationArg,omitempty" yaml:"durationArg"`
+	Body            string             `json:"body,omitempty" yaml:"body,omitempty"`
+	BodyTemplate    *template.Template `json:"-" yaml:"-"`
+	BodyContentType string             `json:"contentType" yaml:"contentType"`
 }
 
 // RouteConfigs is a slice of RouteConfig structs.

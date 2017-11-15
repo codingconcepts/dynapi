@@ -1,10 +1,10 @@
-package dynapi
+package dynoapi
 
 import (
 	"net/http"
 	"testing"
 
-	"github.com/codingconcepts/dynapi/test"
+	"github.com/codingconcepts/dynoapi/test"
 )
 
 func TestAddRoute(t *testing.T) {

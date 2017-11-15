@@ -1,9 +1,9 @@
-package dynapi
+package dynoapi
 
 import (
 	"testing"
 
-	"github.com/codingconcepts/dynapi/test"
+	"github.com/codingconcepts/dynoapi/test"
 )
 
 func TestOptionCertsDir(t *testing.T) {

@@ -1,4 +1,4 @@
-package dynapi
+package dynoapi
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/codingconcepts/dynapi/test"
+	"github.com/codingconcepts/dynoapi/test"
 	"github.com/labstack/echo"
 )
 
