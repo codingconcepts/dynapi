@@ -4,7 +4,6 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
-	"os"
 
 	"gopkg.in/yaml.v2"
 
@@ -18,10 +17,6 @@ var (
 )
 
 func main() {
-	os.Setenv("HOST", "localhost")
-	os.Setenv("PORT", "1234")
-	os.Setenv("SSL", "false")
-
 	config := struct {
 		Host     string `env:"HOST" required:"true"`
 		Port     int    `env:"PORT" required:"true"`
