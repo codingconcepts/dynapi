@@ -175,11 +175,11 @@ func routeHandlerOptions(r RouteConfig) func(echo.Context) error {
 }
 
 func (s *Server) sleep(args map[string]interface{}, r RouteConfig, c echo.Context) (err error) {
-	if r.DurationArg == "" {
+	if r.DurationParam == "" {
 		return
 	}
 
-	rawDuration, ok := args[r.DurationArg]
+	rawDuration, ok := args[r.DurationParam]
 	if !ok {
 		return
 	}

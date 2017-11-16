@@ -36,11 +36,11 @@ var (
 	}
 
 	durationRouteExample = RouteConfig{
-		Method:      http.MethodGet,
-		StatusCode:  http.StatusTeapot,
-		URI:         "/wait/:timeout",
-		Example:     "/wait/1s",
-		DurationArg: "timeout",
+		Method:        http.MethodGet,
+		StatusCode:    http.StatusTeapot,
+		URI:           "/wait/:timeout",
+		Example:       "/wait/1s",
+		DurationParam: "timeout",
 	}
 
 	routeConfig = RouteConfigs{
@@ -129,8 +129,8 @@ func TestRouteHandlerOptions(t *testing.T) {
 		{config: durationRouteExample, expectedBody: ""},
 	}
 	for _, testCase := range testCases {
-		// TODO: DOESN'T CURRENTLY RUN DURATION TESTS DUE TO CLOCK ISSUE, UNCOMMENT WHEN WORKING
-		if testCase.config.DurationArg != "" {
+		// TODO: Doesn't run timeout tests due to race condition in clock
+		if testCase.config.DurationParam != "" {
 			continue
 		}
 

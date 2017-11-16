@@ -72,7 +72,7 @@
   uri: /timeout/:duration
   example: /timeout/1s
   statusCode: 200
-  durationArg: duration
+  durationParam: duration
 
 - method: GET
   uri: /error

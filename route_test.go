@@ -9,12 +9,12 @@ import (
 
 func TestAddRoute(t *testing.T) {
 	route := RouteConfig{
-		Body:        "body",
-		DurationArg: "durationArg",
-		Example:     "example",
-		Method:      "method",
-		StatusCode:  http.StatusOK,
-		URI:         "url",
+		Body:          "body",
+		DurationParam: "durationParam",
+		Example:       "example",
+		Method:        "method",
+		StatusCode:    http.StatusOK,
+		URI:           "url",
 	}
 
 	testCases := []struct {
@@ -33,7 +33,7 @@ func TestAddRoute(t *testing.T) {
 		{
 			name: "durationArg",
 			set: func(r RouteConfig) RouteConfig {
-				r.DurationArg = "different"
+				r.DurationParam = "different"
 				return r
 			},
 			expectedResult: false,
@@ -89,20 +89,20 @@ func TestAddRoute(t *testing.T) {
 
 func TestMerge(t *testing.T) {
 	left := &RouteConfigs{
-		RouteConfig{Body: "a", DurationArg: "b", Example: "c", Method: "d", StatusCode: 1, URI: "e"},
-		RouteConfig{Body: "b", DurationArg: "c", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
+		RouteConfig{Body: "a", DurationParam: "b", Example: "c", Method: "d", StatusCode: 1, URI: "e"},
+		RouteConfig{Body: "b", DurationParam: "c", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
 	}
 
 	right := RouteConfigs{
-		RouteConfig{Body: "a", DurationArg: "b", Example: "c", Method: "d", StatusCode: 1, URI: "e"},
-		RouteConfig{Body: "b", DurationArg: "c", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
-		RouteConfig{Body: "c", DurationArg: "d", Example: "e", Method: "f", StatusCode: 3, URI: "g"},
-		RouteConfig{Body: "c", DurationArg: "c", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
-		RouteConfig{Body: "b", DurationArg: "d", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
-		RouteConfig{Body: "b", DurationArg: "c", Example: "e", Method: "e", StatusCode: 2, URI: "f"},
-		RouteConfig{Body: "b", DurationArg: "c", Example: "d", Method: "f", StatusCode: 2, URI: "f"},
-		RouteConfig{Body: "b", DurationArg: "c", Example: "d", Method: "e", StatusCode: 3, URI: "f"},
-		RouteConfig{Body: "b", DurationArg: "c", Example: "d", Method: "e", StatusCode: 2, URI: "g"},
+		RouteConfig{Body: "a", DurationParam: "b", Example: "c", Method: "d", StatusCode: 1, URI: "e"},
+		RouteConfig{Body: "b", DurationParam: "c", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
+		RouteConfig{Body: "c", DurationParam: "d", Example: "e", Method: "f", StatusCode: 3, URI: "g"},
+		RouteConfig{Body: "c", DurationParam: "c", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
+		RouteConfig{Body: "b", DurationParam: "d", Example: "d", Method: "e", StatusCode: 2, URI: "f"},
+		RouteConfig{Body: "b", DurationParam: "c", Example: "e", Method: "e", StatusCode: 2, URI: "f"},
+		RouteConfig{Body: "b", DurationParam: "c", Example: "d", Method: "f", StatusCode: 2, URI: "f"},
+		RouteConfig{Body: "b", DurationParam: "c", Example: "d", Method: "e", StatusCode: 3, URI: "f"},
+		RouteConfig{Body: "b", DurationParam: "c", Example: "d", Method: "e", StatusCode: 2, URI: "g"},
 	}
 
 	left.Merge(right...)

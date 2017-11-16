@@ -10,7 +10,7 @@ type RouteConfig struct {
 	URI             string             `json:"uri" yaml:"uri"`
 	Example         string             `json:"example" yaml:"example"`
 	StatusCode      int                `json:"statusCode" yaml:"statusCode"`
-	DurationArg     string             `json:"durationArg,omitempty" yaml:"durationArg"`
+	DurationParam   string             `json:"durationParam,omitempty" yaml:"durationParam"`
 	Body            string             `json:"body,omitempty" yaml:"body,omitempty"`
 	BodyTemplate    *template.Template `json:"-" yaml:"-"`
 	BodyContentType string             `json:"contentType" yaml:"contentType,omitempty"`
@@ -44,7 +44,7 @@ func (r *RouteConfigs) MergeRoute(other RouteConfig) {
 // that's parsed and stored for the RouteConfig which
 // is not comparable.
 func (r RouteConfig) Equals(other RouteConfig) bool {
-	if r.DurationArg != other.DurationArg {
+	if r.DurationParam != other.DurationParam {
 		return false
 	}
 	if r.Example != other.Example {
