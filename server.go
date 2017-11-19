@@ -10,6 +10,8 @@ import (
 
 	"golang.org/x/crypto/acme/autocert"
 
+	"github.com/didip/tollbooth"
+	"github.com/didip/tollbooth/limiter"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -38,6 +40,9 @@ func NewServer(host string, port int, options ...Option) (s *Server) {
 	s.router = router
 	s.router.Use(middleware.Recover())
 
+	l := limiter.New(nil).SetMax(1).SetBurst(1).SetMessage("Too many requests.")
+	s.router.Use(limitHandler(l))
+
 	s.router.GET("/version", s.GetVersion)
 	s.router.OPTIONS("/", s.GetConfig)
 	s.router.POST("/", s.AddRoute)
@@ -49,6 +54,22 @@ func NewServer(host string, port int, options ...Option) (s *Server) {
 	}
 
 	return
+}
+
+func limitMiddleware(lmt *limiter.Limiter) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return echo.HandlerFunc(func(c echo.Context) error {
+			httpError := tollbooth.LimitByRequest(lmt, c.Response(), c.Request())
+			if httpError != nil {
+				return c.String(httpError.StatusCode, httpError.Message)
+			}
+			return next(c)
+		})
+	}
+}
+
+func limitHandler(lmt *limiter.Limiter) echo.MiddlewareFunc {
+	return limitMiddleware(lmt)
 }
 
 // ServeHTTP serves from the server's router.

@@ -1,5 +1,5 @@
 # dynoapi
-A dynamic API allowing for easy web client testing.  A collection of example routes are provided with routes.yaml and this can be tailored (or removed to taste).
+A dynamic API allowing for easy web client testing.  A collection of example routes are provided with routes.yaml and this can be tailored (or removed) to taste.
 
 ## Installation
 

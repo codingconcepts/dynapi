@@ -14,6 +14,12 @@
   version = "v3.1.0"
 
 [[projects]]
+  name = "github.com/didip/tollbooth"
+  packages = [".","errors","libstring","limiter"]
+  revision = "b65680a2d5f624ed528d36f8406f31535555828a"
+  version = "v3.0.2"
+
+[[projects]]
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
   revision = "b28538b2e3f5446fe6e0e47ee34cd74b662ca2ab"
@@ -36,6 +42,12 @@
   packages = ["."]
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
+
+[[projects]]
+  name = "github.com/patrickmn/go-cache"
+  packages = ["."]
+  revision = "a3647f8e31d79543b2d0f0ae2fe5c379d72cedc0"
+  version = "v2.1.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -63,19 +75,31 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "9dfe39835686865bff950a07b394c12a98ddc811"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "bf42f188b9bc6f2cf5b8ee5a912ef1aedd0eba4c"
+  revision = "0ac51a24ef1c37380f98ba8b98f56e3bffd59850"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/time"
+  packages = ["rate"]
+  revision = "6dc17368e09b0e8634d71cac8168d853e869a0c7"
 
 [[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
+  revision = "287cf08546ab5e7e37d55a84f7ed3fd1db036de5"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ea31a745219b6d8252f1480c3047356699952efece312c41b85cd516a3c81651"
+  inputs-digest = "e836cddd2d8e0c7414fdd4651283c02eb3c331c01a606566513d7ba961c347d6"
   solver-name = "gps-cdcl"
   solver-version = 1
