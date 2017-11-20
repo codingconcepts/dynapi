@@ -41,7 +41,7 @@ func NewServer(host string, port int, options ...Option) (s *Server) {
 	s.router.Use(middleware.Recover())
 
 	l := limiter.New(nil).SetMax(1).SetBurst(1).SetMessage("Too many requests.")
-	s.router.Use(limitHandler(l))
+	s.router.Use(limitMiddleware(l))
 
 	s.router.GET("/version", s.GetVersion)
 	s.router.OPTIONS("/", s.GetConfig)
@@ -66,10 +66,6 @@ func limitMiddleware(lmt *limiter.Limiter) echo.MiddlewareFunc {
 			return next(c)
 		})
 	}
-}
-
-func limitHandler(lmt *limiter.Limiter) echo.MiddlewareFunc {
-	return limitMiddleware(lmt)
 }
 
 // ServeHTTP serves from the server's router.

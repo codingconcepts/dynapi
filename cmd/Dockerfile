@@ -12,10 +12,10 @@ VOLUME ["/certs"]
 # rm dynoapi
 
 ### Deploy ###
-# docker tag dynoapi codingconcepts/dynoapi
-# docker push codingconcepts/dynoapi
+# docker tag dynoapi codingconcepts/sandbox:dynoapi
+# docker push codingconcepts/sandbox:dynoapi
 
 ### Run ###
-# docker pull codingconcepts/dynoapi
-# docker run -d -p 443:443 -e HOST=api.robreid.io -e CERTS=/certs -e PORT=443 -v /certs:/certs codingconcepts/dynoapi
+# docker pull codingconcepts/sandbox:dynoapi
+# docker run -d -p 443:443 -e HOST=api.robreid.io -e CERTS=/certs -e PORT=443 -v /certs:/certs codingconcepts/sandbox:dynoapi
 # docker run -d -p 1234:1234 -e HOST=api.robreid.io -e SSL=false -e PORT=1234 dynoapi
