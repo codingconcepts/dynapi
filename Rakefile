@@ -1,7 +1,7 @@
 require 'rake'
 require 'semver'
 
-output = 'dynapi.exe'
+output = 'dynapi'
 
 task :build do
     buildVersion = SemVer.find.to_s
@@ -19,7 +19,11 @@ task :run do
     Rake::Task["build"].execute
 
     Dir.chdir('cmd') do
-        sh(output)
+        ENV['HOST'] = 'localhost'
+        ENV['PORT'] = '1234'
+        ENV['SSL'] = 'false'
+
+        sh("./#{output}", '-c', 'routes.yaml')
     end
 end
 
