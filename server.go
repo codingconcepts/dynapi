@@ -145,13 +145,9 @@ func (s *Server) add(route RouteConfig) {
 	handler := s.routeHandler(route)
 	handlerOptions := routeHandlerOptions(route)
 
-	switch route.Method {
-	case http.MethodGet:
-		s.router.GET(route.URI, handler)
-	case http.MethodPost:
-		s.router.POST(route.URI, handler)
-	}
-
+	// Add the dynamic route and an OPTIONS route so the caller
+	// can find out how to interact with the route.
+	s.router.Add(route.Method, route.URI, handler)
 	s.router.OPTIONS(route.URI, handlerOptions)
 
 	// keep track of the route within the server
